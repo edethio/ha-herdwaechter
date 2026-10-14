@@ -1,0 +1,13 @@
+{
+  "domain": "herdwaechter",
+  "name": "Herdwächter",
+  "codeowners": ["@edethio"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/edethio/ha-herdwaechter",
+  "integration_type": "device",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/edethio/ha-herdwaechter/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

@@ -1,0 +1,95 @@
+[project]
+name = "ha-herdwaechter"
+version = "0.1.0"
+description = "Home Assistant integration that detects a running radiant cooktop from the total household power."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.13"
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+extend-exclude = [".venv", "venv"]
+
+[tool.ruff.lint]
+select = [
+    "A",     # builtins shadowing
+    "ASYNC", # async pitfalls (blocking calls in the event loop)
+    "B",     # bugbear
+    "C4",    # comprehensions
+    "D",     # docstrings
+    "E",     # pycodestyle errors
+    "F",     # pyflakes
+    "FURB",  # refurb
+    "I",     # isort
+    "LOG",   # logging
+    "N",     # naming
+    "PERF",  # performance
+    "PGH",   # pygrep hooks
+    "PIE",   # misc
+    "PL",    # pylint
+    "PT",    # pytest style
+    "PTH",   # pathlib
+    "RET",   # return statements
+    "RUF",   # ruff specific
+    "S",     # bandit (security)
+    "SIM",   # simplify
+    "T20",   # print statements
+    "TID",   # tidy imports
+    "UP",    # pyupgrade
+    "W",     # pycodestyle warnings
+]
+ignore = [
+    "D202",    # no blank line after function docstring (conflicts with formatter)
+    "D203",    # one blank line before class docstring (conflicts with D211)
+    "D213",    # multi-line summary second line (conflicts with D212)
+    "PLR0911", # too many return statements
+    "PLR0912", # too many branches
+    "PLR0913", # too many arguments
+    "PLR0915", # too many statements
+    "PLR0917", # too many positional arguments (numeric helper functions)
+    "TID252",  # relative imports from the parent package (usual for HA integrations)
+    "PLR2004", # magic value comparison (thresholds are documented constants)
+    "PLC0415", # import outside top level (used deliberately for lazy imports)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S311", "D103", "PLR0914", "PLC2701", "SLF001"]
+"tests/sim/**" = ["S311"]
+"scripts/**" = ["T201", "S311"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["custom_components", "tests"]
+combine-as-imports = true
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_unreachable = true
+show_error_codes = true
+pretty = false
+files = ["custom_components", "tests/sim", "scripts"]
+
+[[tool.mypy.overrides]]
+module = ["matplotlib", "matplotlib.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = ["slow: long running end-to-end simulation tests"]
+filterwarnings = ["ignore::DeprecationWarning:pytest_asyncio.*"]
+
+[tool.coverage.run]
+source = ["custom_components/herdwaechter"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "raise NotImplementedError"]

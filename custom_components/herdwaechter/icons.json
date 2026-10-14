@@ -1,0 +1,60 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "cooktop": {
+        "default": "mdi:stove"
+      }
+    },
+    "sensor": {
+      "probability": {
+        "default": "mdi:percent-circle-outline"
+      },
+      "confidence": {
+        "default": "mdi:shield-check-outline"
+      },
+      "learning_state": {
+        "default": "mdi:school-outline",
+        "state": {
+          "calibrating": "mdi:tune-variant",
+          "prior_only": "mdi:book-open-variant",
+          "learning": "mdi:school-outline",
+          "trained": "mdi:check-decagram-outline",
+          "insufficient_data": "mdi:alert-circle-outline"
+        }
+      },
+      "residual_load": {
+        "default": "mdi:flash-outline"
+      }
+    },
+    "switch": {
+      "cooking_label": {
+        "default": "mdi:tag-outline",
+        "state": {
+          "on": "mdi:tag-check"
+        }
+      },
+      "pause_learning": {
+        "default": "mdi:pause-circle-outline"
+      }
+    },
+    "button": {
+      "false_alarm": {
+        "default": "mdi:alert-remove-outline"
+      },
+      "reset_model": {
+        "default": "mdi:restore"
+      }
+    }
+  },
+  "services": {
+    "answer_question": {
+      "service": "mdi:comment-question-outline"
+    },
+    "add_label": {
+      "service": "mdi:tag-plus-outline"
+    },
+    "export_training_data": {
+      "service": "mdi:database-export-outline"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+answer_question:
+  fields:
+    question_id:
+      required: true
+      example: "6712ab3c01"
+      selector:
+        text:
+    answer:
+      required: true
+      selector:
+        boolean:
+
+add_label:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: herdwaechter
+    start:
+      required: true
+      selector:
+        datetime:
+    end:
+      required: true
+      selector:
+        datetime:
+    cooking:
+      required: true
+      default: true
+      selector:
+        boolean:
+
+export_training_data:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: herdwaechter

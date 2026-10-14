@@ -1,0 +1,59 @@
+name: Bug report
+description: Something does not work as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please do not post personal data (entity IDs of
+        your home, addresses, tokens). Diagnostics downloaded from the
+        integration page contain no entity IDs and can be attached safely.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+  - type: input
+    id: version
+    attributes:
+      label: Herdwächter version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.10.1"
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Metering setup
+      description: Meter type and update interval, PV / battery with zero export, generation sensors, subtracted devices.
+  - type: dropdown
+    id: learning_state
+    attributes:
+      label: Learning state
+      options:
+        - calibrating
+        - prior_only
+        - learning
+        - trained
+        - insufficient_data
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and logs
+      description: Attach the diagnostics file (Settings → Devices & services → Herdwächter → ⋮ → Download diagnostics) and relevant log lines.
+      render: text

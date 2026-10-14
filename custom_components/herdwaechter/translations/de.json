@@ -1,0 +1,258 @@
+{
+  "title": "Herdwächter",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kochfeld überwachen",
+        "description": "Der Herdwächter erkennt ein eingeschaltetes Glaskeramik-Kochfeld mit Strahlheizkörpern allein anhand der Gesamtleistung am Stromzähler. Wähle den Netzleistungs-Sensor und – bei PV mit Nulleinspeisung oder Akku – die Erzeugungs-Sensoren. Geräte mit eigenem Powermeter können abgezogen werden.",
+        "data": {
+          "name": "Name",
+          "grid_sensor": "Netzleistungs-Sensor",
+          "invert_grid": "Vorzeichen umkehren",
+          "generation_sensors": "Erzeugungs-Sensoren",
+          "subtract_sensors": "Abzuziehende Geräte",
+          "label_entity": "Externe Label-Quelle"
+        },
+        "data_description": {
+          "name": "Name des überwachten Geräts.",
+          "grid_sensor": "Netzleistung am Zähler: positiv bei Bezug. W und kW werden automatisch umgerechnet.",
+          "invert_grid": "Aktivieren, wenn dein Zähler Bezug als negativen Wert meldet.",
+          "generation_sensors": "Optional: AC-Leistung des Wechselrichters, Akku-Entladeleistung, … Sie werden zur Netzleistung addiert, um den Hausverbrauch zu rekonstruieren.",
+          "subtract_sensors": "Optional: Powermeter von Geräten wie Spül- oder Waschmaschine. Ihre Leistung wird abgezogen.",
+          "label_entity": "Optional: ein vorhandener Input-Boolean, Schalter oder Binärsensor, dessen Zustand „an“ als „Herd ist an“ gilt."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "Die Entität existiert nicht.",
+      "not_numeric": "Die Entität liefert keinen Zahlenwert.",
+      "invalid_unit": "Die Entität liefert keine Leistungseinheit (W, kW, …).",
+      "grid_in_other_list": "Der Netzleistungs-Sensor darf nicht zugleich Erzeugungs-Sensor oder abzuziehendes Gerät sein.",
+      "duplicate_entity": "Eine Entität wurde mehrfach ausgewählt."
+    },
+    "abort": {
+      "already_configured": "Dieser Netzleistungs-Sensor wird bereits für ein Kochfeld verwendet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Sensoren",
+        "description": "Name und Sensoren ändern. Gelernte Daten bleiben erhalten.",
+        "data": {
+          "name": "Name",
+          "grid_sensor": "Netzleistungs-Sensor",
+          "invert_grid": "Vorzeichen umkehren",
+          "generation_sensors": "Erzeugungs-Sensoren",
+          "subtract_sensors": "Abzuziehende Geräte",
+          "label_entity": "Externe Label-Quelle"
+        },
+        "data_description": {
+          "name": "Name des überwachten Geräts.",
+          "grid_sensor": "Netzleistung am Zähler: positiv bei Bezug. W und kW werden automatisch umgerechnet.",
+          "invert_grid": "Aktivieren, wenn dein Zähler Bezug als negativen Wert meldet.",
+          "generation_sensors": "Optional: AC-Leistung des Wechselrichters, Akku-Entladeleistung, … Sie werden zur Netzleistung addiert, um den Hausverbrauch zu rekonstruieren.",
+          "subtract_sensors": "Optional: Powermeter von Geräten wie Spül- oder Waschmaschine. Ihre Leistung wird abgezogen.",
+          "label_entity": "Optional: ein vorhandener Input-Boolean, Schalter oder Binärsensor, dessen Zustand „an“ als „Herd ist an“ gilt."
+        }
+      },
+      "tuning": {
+        "title": "Erkennung und Lernen",
+        "data": {
+          "on_threshold": "Einschaltschwelle",
+          "off_threshold": "Ausschaltschwelle",
+          "evaluation_interval": "Bewertungsintervall",
+          "window_minutes": "Analysefenster",
+          "max_label_minutes": "Maximale Label-Dauer",
+          "questions_enabled": "Aktive Rückfragen",
+          "notify_service": "Benachrichtigungsdienst für Rückfragen",
+          "max_questions_per_day": "Maximale Rückfragen pro Tag"
+        },
+        "data_description": {
+          "on_threshold": "Der Herd gilt als an, wenn die Wahrscheinlichkeit diesen Wert in zwei aufeinanderfolgenden Bewertungen erreicht.",
+          "off_threshold": "Der Herd gilt als aus, wenn die Wahrscheinlichkeit in zwei aufeinanderfolgenden Bewertungen darunter liegt.",
+          "evaluation_interval": "Wie oft das Analysefenster bewertet wird.",
+          "window_minutes": "Länge des ausgewerteten Leistungsverlaufs.",
+          "max_label_minutes": "Nach dieser Zeit schaltet sich der Label-Schalter selbst aus.",
+          "questions_enabled": "Nachfragen, wenn die Erkennung unsicher ist (Wahrscheinlichkeit zwischen 40 und 80 %). Löst das Ereignis herdwaechter_question aus.",
+          "notify_service": "Optional: Benachrichtigungsdienst der Home-Assistant-Companion-App (zum Beispiel mobile_app_handy), der Rückfragen mit Ja/Nein-Aktionen erhält.",
+          "max_questions_per_day": "Obergrenze für Rückfragen pro Tag."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "Die Entität existiert nicht.",
+      "not_numeric": "Die Entität liefert keinen Zahlenwert.",
+      "invalid_unit": "Die Entität liefert keine Leistungseinheit (W, kW, …).",
+      "grid_in_other_list": "Der Netzleistungs-Sensor darf nicht zugleich Erzeugungs-Sensor oder abzuziehendes Gerät sein.",
+      "duplicate_entity": "Eine Entität wurde mehrfach ausgewählt.",
+      "off_not_below_on": "Die Ausschaltschwelle muss unter der Einschaltschwelle liegen.",
+      "notify_not_found": "Dieser Benachrichtigungsdienst existiert nicht."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "cooktop": {
+        "state_attributes": {
+          "probability": {
+            "name": "Wahrscheinlichkeit"
+          },
+          "confidence": {
+            "name": "Sicherheit"
+          },
+          "learned_power_levels": {
+            "name": "Gelernte Leistungsstufen"
+          },
+          "last_cycle": {
+            "name": "Letzter Taktzyklus"
+          },
+          "detected_period_s": {
+            "name": "Erkannte Periode"
+          },
+          "model_weight": {
+            "name": "Modellgewicht"
+          },
+          "learning_state": {
+            "name": "Lernstatus"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "probability": {
+        "name": "Wahrscheinlichkeit"
+      },
+      "confidence": {
+        "name": "Sicherheit"
+      },
+      "learning_state": {
+        "name": "Lernstatus",
+        "state": {
+          "calibrating": "Kalibrierung",
+          "prior_only": "Nur Vorwissen",
+          "learning": "Lernt",
+          "trained": "Trainiert",
+          "insufficient_data": "Datenqualität unzureichend"
+        },
+        "state_attributes": {
+          "labels_positive": {
+            "name": "Positive Labels"
+          },
+          "labels_negative": {
+            "name": "Negative Labels"
+          },
+          "precision": {
+            "name": "Precision"
+          },
+          "recall": {
+            "name": "Recall"
+          },
+          "brier": {
+            "name": "Brier-Score"
+          },
+          "estimated_lag_s": {
+            "name": "Geschätzte Verzögerung"
+          },
+          "update_interval_s": {
+            "name": "Effektives Update-Intervall"
+          },
+          "edge_threshold_w": {
+            "name": "Flankenschwelle"
+          }
+        }
+      },
+      "residual_load": {
+        "name": "Restlast"
+      }
+    },
+    "switch": {
+      "cooking_label": {
+        "name": "Label Herd ist an",
+        "state_attributes": {
+          "auto_off_in_s": {
+            "name": "Automatisch aus in"
+          }
+        }
+      },
+      "pause_learning": {
+        "name": "Lernen pausieren"
+      }
+    },
+    "button": {
+      "false_alarm": {
+        "name": "Fehlalarm"
+      },
+      "reset_model": {
+        "name": "Modell zurücksetzen"
+      }
+    }
+  },
+  "services": {
+    "answer_question": {
+      "name": "Rückfrage beantworten",
+      "description": "Beantwortet eine Rückfrage des Herdwächters zum Kochfeld.",
+      "fields": {
+        "question_id": {
+          "name": "Fragen-ID",
+          "description": "Die question_id aus dem Ereignis herdwaechter_question."
+        },
+        "answer": {
+          "name": "Herd ist an",
+          "description": "Ja, wenn der Herd an war, sonst nein."
+        }
+      }
+    },
+    "add_label": {
+      "name": "Label hinzufügen",
+      "description": "Markiert einen vergangenen Zeitraum (innerhalb der letzten 24 Stunden) als Kochen oder Nicht-Kochen.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Kochfeld",
+          "description": "Das überwachte Kochfeld."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Beginn des Zeitraums."
+        },
+        "end": {
+          "name": "Ende",
+          "description": "Ende des Zeitraums."
+        },
+        "cooking": {
+          "name": "Herd war an",
+          "description": "Ja, wenn der Herd im gesamten Zeitraum an war, nein, wenn er aus war."
+        }
+      }
+    },
+    "export_training_data": {
+      "name": "Trainingsdaten exportieren",
+      "description": "Schreibt die anonymisierten, gelabelten Feature-Vektoren (keine Rohdaten, keine Zeitstempel, keine Entity-IDs) als JSON-Datei in den Konfigurationsordner.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Kochfeld",
+          "description": "Das überwachte Kochfeld."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "entry_not_found": {
+      "message": "Es gibt keinen Herdwächter-Eintrag mit der ID {entry_id}."
+    },
+    "entry_not_loaded": {
+      "message": "Der Herdwächter-Eintrag {entry_id} ist nicht geladen."
+    },
+    "question_not_found": {
+      "message": "Es gibt keine offene Rückfrage mit der ID {question_id}. Rückfragen verfallen nach 30 Minuten."
+    },
+    "invalid_time_range": {
+      "message": "Das Ende muss nach dem Start liegen."
+    }
+  },
+  "common": {
+    "question_title": "Ist der Herd an?",
+    "question_message": "Der Herdwächter ist unsicher, ob {name} gerade an ist. Deine Antwort hilft beim Lernen.",
+    "answer_yes": "Ja",
+    "answer_no": "Nein"
+  }
+}

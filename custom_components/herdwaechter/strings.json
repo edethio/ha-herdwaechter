@@ -1,0 +1,258 @@
+{
+  "title": "Herdwächter",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Monitor a cooktop",
+        "description": "Herdwächter detects a running radiant cooktop from the total power at your electricity meter. Select the grid power sensor and, if you have a zero-export PV system or battery, the generation sensors. Devices with their own power meter can be subtracted.",
+        "data": {
+          "name": "Name",
+          "grid_sensor": "Grid power sensor",
+          "invert_grid": "Invert sign",
+          "generation_sensors": "Generation sensors",
+          "subtract_sensors": "Devices to subtract",
+          "label_entity": "External label source"
+        },
+        "data_description": {
+          "name": "Name of the monitored appliance.",
+          "grid_sensor": "Net power at the meter: positive while importing. W and kW are converted automatically.",
+          "invert_grid": "Enable if your meter reports import as a negative value.",
+          "generation_sensors": "Optional: inverter AC output, battery discharge power, ... They are added to the grid power to reconstruct the household consumption.",
+          "subtract_sensors": "Optional: power meters of appliances such as the dishwasher or washing machine. Their power is subtracted.",
+          "label_entity": "Optional: an existing input boolean, switch or binary sensor whose \"on\" state means \"the cooktop is on\"."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "The entity does not exist.",
+      "not_numeric": "The entity does not report a numeric value.",
+      "invalid_unit": "The entity does not report a power unit (W, kW, ...).",
+      "grid_in_other_list": "The grid power sensor must not also be a generation sensor or a device to subtract.",
+      "duplicate_entity": "An entity was selected more than once."
+    },
+    "abort": {
+      "already_configured": "This grid power sensor is already used for a cooktop."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Sensors",
+        "description": "Change the name and the sensors. Learned data is kept.",
+        "data": {
+          "name": "Name",
+          "grid_sensor": "Grid power sensor",
+          "invert_grid": "Invert sign",
+          "generation_sensors": "Generation sensors",
+          "subtract_sensors": "Devices to subtract",
+          "label_entity": "External label source"
+        },
+        "data_description": {
+          "name": "Name of the monitored appliance.",
+          "grid_sensor": "Net power at the meter: positive while importing. W and kW are converted automatically.",
+          "invert_grid": "Enable if your meter reports import as a negative value.",
+          "generation_sensors": "Optional: inverter AC output, battery discharge power, ... They are added to the grid power to reconstruct the household consumption.",
+          "subtract_sensors": "Optional: power meters of appliances such as the dishwasher or washing machine. Their power is subtracted.",
+          "label_entity": "Optional: an existing input boolean, switch or binary sensor whose \"on\" state means \"the cooktop is on\"."
+        }
+      },
+      "tuning": {
+        "title": "Detection and learning",
+        "data": {
+          "on_threshold": "Switch-on threshold",
+          "off_threshold": "Switch-off threshold",
+          "evaluation_interval": "Evaluation interval",
+          "window_minutes": "Analysis window",
+          "max_label_minutes": "Maximum label duration",
+          "questions_enabled": "Active questions",
+          "notify_service": "Notification service for questions",
+          "max_questions_per_day": "Maximum questions per day"
+        },
+        "data_description": {
+          "on_threshold": "The cooktop is reported as on when the probability reaches this value in two consecutive evaluations.",
+          "off_threshold": "The cooktop is reported as off when the probability stays below this value in two consecutive evaluations.",
+          "evaluation_interval": "How often the analysis window is evaluated.",
+          "window_minutes": "Length of the analysed power history.",
+          "max_label_minutes": "The label switch turns itself off after this time.",
+          "questions_enabled": "Ask when the detection is unsure (probability between 40 and 80 %). Fires the herdwaechter_question event.",
+          "notify_service": "Optional: notify service of the Home Assistant Companion app (for example mobile_app_phone) that receives questions with Yes/No actions.",
+          "max_questions_per_day": "Upper limit for questions per day."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "The entity does not exist.",
+      "not_numeric": "The entity does not report a numeric value.",
+      "invalid_unit": "The entity does not report a power unit (W, kW, ...).",
+      "grid_in_other_list": "The grid power sensor must not also be a generation sensor or a device to subtract.",
+      "duplicate_entity": "An entity was selected more than once.",
+      "off_not_below_on": "The switch-off threshold must be lower than the switch-on threshold.",
+      "notify_not_found": "This notification service does not exist."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "cooktop": {
+        "state_attributes": {
+          "probability": {
+            "name": "Probability"
+          },
+          "confidence": {
+            "name": "Confidence"
+          },
+          "learned_power_levels": {
+            "name": "Learned power levels"
+          },
+          "last_cycle": {
+            "name": "Last cycle"
+          },
+          "detected_period_s": {
+            "name": "Detected period"
+          },
+          "model_weight": {
+            "name": "Model weight"
+          },
+          "learning_state": {
+            "name": "Learning state"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "probability": {
+        "name": "Probability"
+      },
+      "confidence": {
+        "name": "Confidence"
+      },
+      "learning_state": {
+        "name": "Learning state",
+        "state": {
+          "calibrating": "Calibrating",
+          "prior_only": "Prior knowledge only",
+          "learning": "Learning",
+          "trained": "Trained",
+          "insufficient_data": "Insufficient data quality"
+        },
+        "state_attributes": {
+          "labels_positive": {
+            "name": "Positive labels"
+          },
+          "labels_negative": {
+            "name": "Negative labels"
+          },
+          "precision": {
+            "name": "Precision"
+          },
+          "recall": {
+            "name": "Recall"
+          },
+          "brier": {
+            "name": "Brier score"
+          },
+          "estimated_lag_s": {
+            "name": "Estimated sensor lag"
+          },
+          "update_interval_s": {
+            "name": "Effective update interval"
+          },
+          "edge_threshold_w": {
+            "name": "Edge threshold"
+          }
+        }
+      },
+      "residual_load": {
+        "name": "Residual load"
+      }
+    },
+    "switch": {
+      "cooking_label": {
+        "name": "Label cooktop on",
+        "state_attributes": {
+          "auto_off_in_s": {
+            "name": "Automatic off in"
+          }
+        }
+      },
+      "pause_learning": {
+        "name": "Pause learning"
+      }
+    },
+    "button": {
+      "false_alarm": {
+        "name": "False alarm"
+      },
+      "reset_model": {
+        "name": "Reset model"
+      }
+    }
+  },
+  "services": {
+    "answer_question": {
+      "name": "Answer question",
+      "description": "Answers a question that Herdwächter asked about the cooktop.",
+      "fields": {
+        "question_id": {
+          "name": "Question ID",
+          "description": "The question_id from the herdwaechter_question event."
+        },
+        "answer": {
+          "name": "Cooktop is on",
+          "description": "Yes if the cooktop was on, no otherwise."
+        }
+      }
+    },
+    "add_label": {
+      "name": "Add label",
+      "description": "Labels a past period (within the last 24 hours) as cooking or not cooking.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Cooktop",
+          "description": "The monitored cooktop."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Start of the period."
+        },
+        "end": {
+          "name": "End",
+          "description": "End of the period."
+        },
+        "cooking": {
+          "name": "Cooktop was on",
+          "description": "Yes if the cooktop was on during the whole period, no if it was off."
+        }
+      }
+    },
+    "export_training_data": {
+      "name": "Export training data",
+      "description": "Writes the anonymised labelled feature vectors (no raw data, no timestamps, no entity IDs) as a JSON file into the configuration folder.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Cooktop",
+          "description": "The monitored cooktop."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "entry_not_found": {
+      "message": "No Herdwächter entry with ID {entry_id} exists."
+    },
+    "entry_not_loaded": {
+      "message": "The Herdwächter entry {entry_id} is not loaded."
+    },
+    "question_not_found": {
+      "message": "No open question with ID {question_id} exists. Questions expire after 30 minutes."
+    },
+    "invalid_time_range": {
+      "message": "The end must be after the start."
+    }
+  },
+  "common": {
+    "question_title": "Is the cooktop on?",
+    "question_message": "Herdwächter is not sure whether {name} is on right now. Your answer helps it learn.",
+    "answer_yes": "Yes",
+    "answer_no": "No"
+  }
+}
